@@ -1,42 +1,39 @@
-from fastapi import HTTPException, status, APIRouter
+from fastapi import Depends, HTTPException, status, APIRouter
 from typing import List
-from src.authors.schemas import AuthorModel, PatchAuthorModel
-from src.authors.author_data import authors
+from sqlalchemy.ext.asyncio import AsyncSession
+from src.authors.schemas import AuthorModel, PatchAuthorModel, AuthorCreateModel
+from src.authors.services import Authorservice
+from src.db import get_session
 
 router = APIRouter()
+Authorservice = Authorservice()
 
-@router.get('/', response_model = List[AuthorModel])
-async def get_all_authors():
-    if not authors:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No authors found")
-    return authors
+@router.get('/', response_model=List[AuthorModel], status_code=status.HTTP_200_OK)
+async def get_all_authors(session: AsyncSession = Depends(get_session)):
+    return await Authorservice.get_all_authors(session)
 
-@router.get('/{author_id}', response_model=AuthorModel, status_code=status.HTTP_200_OK)
-async def get_author_by_id(author_id:int):
-    for author in authors:
-        if author['id'] == author_id:
-            return author
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Author not found")
+@router.get('/{author_uid}', response_model=AuthorModel, status_code=status.HTTP_200_OK)
+async def get_author_by_id(author_uid:str, session: AsyncSession = Depends(get_session)):
+    author = await Authorservice.get_author_by_id(session, author_uid)
+    if not author:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Author not found")
+    return author
 
-@router.post('/',response_model=AuthorModel, status_code=status.HTTP_201_CREATED)
-async def create_author(author_data: AuthorModel):
-    new_author = author_data.model_dump()
-    authors.append(new_author)
-    return new_author
+@router.post("/", response_model=AuthorModel, status_code=status.HTTP_201_CREATED)
+async def create_author(author_data: AuthorCreateModel, session: AsyncSession = Depends(get_session)):
+    return await Authorservice.create_author(session, author_data)
 
-@router.patch('/{author_id}', response_model=PatchAuthorModel, status_code=status.HTTP_200_OK)
-async def update_author(author_id:int, author_update_data: PatchAuthorModel):
-    for author  in authors:
-        if author['id'] == author_id:
-            author['name'] = author_update_data.name
-            author['email'] = author_update_data.email
-            return author
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Author not found")
+@router.patch('/{author_uid}', response_model=AuthorModel, status_code=status.HTTP_200_OK)
+async def update_author(author_uid:str, update_data: PatchAuthorModel, session:AsyncSession = Depends(get_session)):
+    author = await Authorservice.update_author(session, author_uid, update_data)
+    if not author:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Author not found")
+    return author
 
-@router.delete('/{author_id}', status_code=status.HTTP_204_NO_CONTENT)
-async def delete_author(author_id:int):
-    for author in authors:
-        if author['id'] == author_id:
-            authors.remove(author)
-            return
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Author not found")
+@router.delete('/{author_uid}', response_model=None, status_code=status.HTTP_204_NO_CONTENT)
+async def delete_author(author_uid: str, session: AsyncSession = Depends(get_session)):
+    deleted = await Authorservice.delete_author(session, author_uid)
+    if not deleted:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Author not found")
+    return None
+

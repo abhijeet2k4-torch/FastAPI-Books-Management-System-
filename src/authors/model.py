@@ -13,7 +13,6 @@ class AuthorModel(SQLModel, table=True):
             default=uuid.uuid4
         )
     )
-    id:int
     name:str
     email:str
     create_date: datetime = Field(sa_column = Column(pg.TIMESTAMP, default=datetime.now))
