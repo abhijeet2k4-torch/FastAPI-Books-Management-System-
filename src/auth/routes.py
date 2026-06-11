@@ -6,9 +6,13 @@ from .service import UserService
 from src.db.main import get_session
 from .utils import create_access_token, decode_token, verify_password
 from datetime import timedelta
+from src.auth.dependencies import AccessTokenBearer
+from .dependencies import RefreshTokenBearer
+import datetime
 
 auth_router = APIRouter()
 user_service = UserService()
+access_token_bearer = AccessTokenBearer()
 
 REFRESH_TOKEN_EXPIRY = timedelta(days=7)
 
@@ -53,3 +57,16 @@ async def login_user(login_data: UserLoginModel, session: AsyncSession = Depends
             }
         }
     )
+
+@auth_router.get("/refresh_token")
+async def get_new_access_token(token_details:dict = Depends(RefreshTokenBearer())):
+    expiry_date = token_details['exp']
+    if datetime.datetime.fromtimestamp(expiry_date) > datetime.datetime.now():
+        new_access_token = create_access_token(
+            user_data=token_details['user']
+        )
+        return JSONResponse(content={
+            "access_token": new_access_token
+        })
+    else:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid or expired refresh token")
