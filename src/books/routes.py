@@ -15,9 +15,14 @@ role_checker = RoleChekcer(['admin',"user"])
 async def get_all_books(session: AsyncSession=Depends(get_session), user_details=Depends(access_token_bearer)) -> List[BookModel]:
     return await book_service.get_all_books(session)
 
+@router.get('/user/{user_uid}', response_model=List[BookModel], dependencies=[Depends(role_checker)])
+async def get_user_book_submissions(user_uid:str,session: AsyncSession=Depends(get_session), user_details=Depends(access_token_bearer)) -> List[BookModel]:
+    return await book_service.get_user_books(user_uid,session)
+
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=BookModel, dependencies=[Depends(role_checker)])
-async def create_book(book_data: BookCreateModel, session: AsyncSession=Depends(get_session), user_details=Depends(access_token_bearer), _:bool = Depends(role_checker))-> dict:
-    new_book = await book_service.create_book(book_data, session)
+async def create_book(book_data: BookCreateModel, session: AsyncSession=Depends(get_session), token_details: dict=Depends(access_token_bearer), _:bool = Depends(role_checker))-> dict:
+    user_id = token_details.get('user')['user_uid']
+    new_book = await book_service.create_book(book_data,user_id, session)
     return new_book
 
 @router.get('/{book_uid}', response_model=BookModel, dependencies=[Depends(role_checker)])
