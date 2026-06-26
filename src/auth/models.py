@@ -3,7 +3,7 @@ import uuid
 from datetime import datetime
 import sqlalchemy.dialects.postgresql as pg
 
-class User(SQLModel, table= True):
+class User(SQLModel, table=True):
     __tablename__ = 'users'
     uid: uuid.UUID = Field(
         sa_column=Column(
@@ -14,12 +14,15 @@ class User(SQLModel, table= True):
         )
     )
     username: str
-    email: str
+    email: str = Field(nullable=False, index=True)
     first_name: str
     last_name: str
+    role: str = Field(sa_column=Column(
+        pg.VARCHAR, nullable=False, server_default="user"
+    ))
     is_verified: bool = Field(default=False)
     password_has: str = Field(exclude=True)
-    created_at: datetime = Field(sa_column=Column(pg.TIMESTAMP, nullable=False, default=datetime.now))  
+    created_at: datetime = Field(sa_column=Column(pg.TIMESTAMP, nullable=False, default=datetime.now))
     updated_at: datetime = Field(sa_column=Column(pg.TIMESTAMP, nullable=False, default=datetime.now))
 
     def __repr__(self):

@@ -15,7 +15,10 @@ if settings.REDIS_ENABLED:
     _redis_client = redis.Redis(
         host=settings.REDIS_HOST,
         port=settings.REDIS_PORT,
-        db=0
+        db=0,
+        socket_timeout=1,
+        socket_connect_timeout=1,
+        retry_on_timeout=True,
     )
 
 

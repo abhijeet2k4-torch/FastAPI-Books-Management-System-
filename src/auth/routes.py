@@ -7,13 +7,15 @@ from src.db.main import get_session
 from .utils import create_access_token, decode_token, verify_password
 from datetime import timedelta
 from src.auth.dependencies import AccessTokenBearer
-from .dependencies import RefreshTokenBearer
+from .dependencies import RefreshTokenBearer, get_current_user, RoleChekcer
 import datetime
 from src.db.redis import add_jti_to_blocklist
+
 
 auth_router = APIRouter()
 user_service = UserService()
 access_token_bearer = AccessTokenBearer()
+role_checker = RoleChekcer(['admin',"user"])
 
 REFRESH_TOKEN_EXPIRY = timedelta(days=7)
 
@@ -42,7 +44,7 @@ async def login_user(login_data: UserLoginModel, session: AsyncSession = Depends
     if not password_valid:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid credentials")
 
-    token = create_access_token(user_data={"uid": str(user.uid), "email": user.email})
+    token = create_access_token(user_data={"uid": str(user.uid), "email": user.email, "role":user.role})
     refresh_token = create_access_token(user_data={"uid": str(user.uid), "email": user.email}, expiry=REFRESH_TOKEN_EXPIRY, refresh=True)
 
     return JSONResponse(
@@ -82,3 +84,7 @@ async def revoke_token(token_details:dict=Depends(AccessTokenBearer())):
         },
         status_code=status.HTTP_200_OK
     )
+
+@auth_router.get('/me')
+async def read_current_user(user= Depends(get_current_user), _:bool = Depends(role_checker)):
+    return user

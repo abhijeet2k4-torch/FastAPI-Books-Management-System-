@@ -1,3 +1,4 @@
+import uuid
 from .models import User
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlmodel import select
@@ -11,6 +12,13 @@ class UserService:
         )
         user = result.one_or_none()
         return user
+
+    async def get_user_by_uid(self, uid: uuid.UUID, session: AsyncSession) -> User:
+        result = await session.exec(
+            select(User).where(User.uid == uid)
+        )
+        user = result.one_or_none()
+        return user
     
     async def user_exists(self,email:str, session: AsyncSession) -> bool:
         user = await self.get_user_by_email(email, session)
@@ -20,6 +28,7 @@ class UserService:
         user_data_dict = user_data.model_dump()
         user_data_dict["password_has"] = generate_password_hash(user_data.password)
         new_user = User(**user_data_dict)
+        new_user.role = "user"
 
         session.add(new_user)
         await session.commit()
