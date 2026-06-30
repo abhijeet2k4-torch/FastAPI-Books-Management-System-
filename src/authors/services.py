@@ -9,7 +9,11 @@ class Authorservice:
         statement = select(AuthorTable).where(AuthorTable.uid == author_uid)
         result = await session.exec(statement)
         return result.first()
-
+    async def get_user_books(self,user_uid:str,session:AsyncSession):
+        statement = select(AuthorTable).where(AuthorTable.user_uid == user_uid).order_by(desc(AuthorTable.create_date))
+        result = await session.exec(statement)
+        return result.all()
+    
     async def get_author_by_id(self,session:AsyncSession,author_uid:str):
         return await self.get_author(session, author_uid)
 

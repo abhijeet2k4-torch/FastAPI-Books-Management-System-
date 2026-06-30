@@ -14,6 +14,10 @@ access_token_bearer = AccessTokenBearer()
 async def get_all_authors(session: AsyncSession = Depends(get_session), user_details=Depends(access_token_bearer)):
     return await Authorservice.get_all_authors(session)
 
+@router.get('/user/{user_uid}', response_model=List[AuthorModel])
+async def get_user_author(user_uid:str, session: AsyncSession = Depends(get_session), user_details=Depends(access_token_bearer)) -> List[AuthorModel]:
+    return await Authorservice.get_user_books(user_uid, session)
+
 @router.get('/{author_uid}', response_model=AuthorModel, status_code=status.HTTP_200_OK)
 async def get_author_by_id(author_uid:str, session: AsyncSession = Depends(get_session), user_details=Depends(access_token_bearer)):
     author = await Authorservice.get_author_by_id(session, author_uid)

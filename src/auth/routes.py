@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, status, HTTPException
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
-from .schemas import UserCreateModel, UserModel, UserLoginModel
+from .schemas import UserCreateModel, UserModel, UserLoginModel, UserBookModel
 from .service import UserService
 from src.db.main import get_session
 from .utils import create_access_token, decode_token, verify_password
@@ -85,6 +85,6 @@ async def revoke_token(token_details:dict=Depends(AccessTokenBearer())):
         status_code=status.HTTP_200_OK
     )
 
-@auth_router.get('/me', response_model=UserModel)
+@auth_router.get('/me', response_model=UserBookModel)
 async def read_current_user(user= Depends(get_current_user), _:bool = Depends(role_checker)):
     return user

@@ -3,6 +3,7 @@ import uuid
 from typing import List
 from pydantic import BaseModel, Field
 from src.books.schemas import BookModel
+from src.authors.schemas import AuthorModel
 
 class UserCreateModel(BaseModel):
     first_name: str = Field(max_length=20)
@@ -20,7 +21,10 @@ class UserModel(BaseModel):
     is_verified: bool 
     created_at: datetime 
     updated_at: datetime 
+    
+class UserBookModel(BaseModel):
     books: List[BookModel]
+    authors: List[AuthorModel]
 
 class UserLoginModel(BaseModel):
     email: str
