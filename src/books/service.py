@@ -1,7 +1,7 @@
 from sqlmodel.ext.asyncio.session import AsyncSession
 from .schemas import BookCreateModel, PatchBookModel
 from sqlmodel import select, desc
-from .model import BookModel as BookTable
+from src.db.models import BookModel as BookTable
 
 class BookService:
     async def get_all_books(self,session:AsyncSession):

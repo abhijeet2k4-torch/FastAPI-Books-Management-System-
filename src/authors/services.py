@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import desc, select
-from .model import AuthorModel as AuthorTable
+from src.db.models import AuthorModel as AuthorTable
 from .schemas import AuthorCreateModel, PatchAuthorModel
 
 

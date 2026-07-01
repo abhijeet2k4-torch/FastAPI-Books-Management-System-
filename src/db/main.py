@@ -8,14 +8,12 @@ from typing import AsyncGenerator
 async_engine = create_async_engine(
     url=settings.DATABASE_URL,
     future=True,
-    echo=True,
+    echo=True,  
 )
 
 async def init_db():
     async with async_engine.begin() as conn:
-        from src.books.model import BookModel
-        from src.authors.model import AuthorModel
-        from src.auth.models import User
+        from src.db.models import User, BookModel, AuthorModel
         await conn.run_sync(SQLModel.metadata.create_all)
 
 async def get_session() -> AsyncGenerator[AsyncSession, None]:

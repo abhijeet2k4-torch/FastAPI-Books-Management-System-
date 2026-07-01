@@ -6,10 +6,8 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 from src.config import settings as app_settings
 from alembic import context
-from src.auth.models import User
+from src.db.models import User, BookModel, AuthorModel
 from sqlmodel import SQLModel
-from src.authors.model import AuthorModel
-from src.books.model import BookModel
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 database_url = app_settings.DATABASE_URL
