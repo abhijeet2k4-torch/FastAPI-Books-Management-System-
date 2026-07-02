@@ -86,5 +86,5 @@ class Review(SQLModel, table=True):
     update_date: datetime = Field(sa_column=Column(pg.TIMESTAMP, default=datetime.now))
     review_text: Optional[str] = Field(default=None)
 
-        def __repr__(self):
-            return f"Review(uid={self.uid}, rating={self.rating}, user_uid={self.user_uid}, book_uid={self.book_uid}, create_date={self.create_date}, update_date={self.update_date}, review_text={self.review_text})"
+    def __repr__(self):
+        return f"Review(uid={self.uid}, rating={self.rating}, user_uid={self.user_uid}, book_uid={self.book_uid}, create_date={self.create_date}, update_date={self.update_date}, review_text={self.review_text})"

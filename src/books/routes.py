@@ -5,6 +5,7 @@ from src.books.schemas import BookModel, BookCreateModel, PatchBookModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.books.service import BookService
 from src.auth.dependencies import AccessTokenBearer, RoleChekcer
+from src.errors import BookNotFoundError
 
 router = APIRouter()
 book_service = BookService()
@@ -38,6 +39,7 @@ async def update_book(book_uid:str, book_update_data: PatchBookModel, session: A
 async def delete_book(book_uid: str, session: AsyncSession = Depends(get_session), user_details=Depends(access_token_bearer)):
     deleted = await book_service.delete_book(session, book_uid)
     if not deleted:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Book not found")
-    return None
+        raise BookNotFoundError("Book not found")
+
+
     

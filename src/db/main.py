@@ -8,7 +8,6 @@ from typing import AsyncGenerator
 async_engine = create_async_engine(
     url=settings.DATABASE_URL,
     future=True,
-    echo=True,  
 )
 
 async def init_db():
