@@ -6,7 +6,6 @@ from contextlib import asynccontextmanager
 from src.db.main import init_db
 from src.auth.routes import auth_router
 from .errors import(create_exception_handler,InvalidTokenError, RevokedTokenError, AccessTokenExpiredError, RefreshTokenExpiredError, InsufficientPermissionsError, BookNotFoundError, InvalidCredentialsError, UserAlreadyExistsError)
-from .middleware import register_middleware
 
 @asynccontextmanager
 async def lifespan(app:FastAPI):
@@ -35,7 +34,6 @@ async def internal_server_error_handler(request, exc):
         content={"message": "Something went wrong", "resolution": "Please try again later"},
     )
 
-register_middleware(app)
 
 app.include_router(book_router, prefix=f"/api/{version}/books",tags=["Books"])
 app.include_router(author_router, prefix=f"/api/{version}/authors",tags=["Authors"])
