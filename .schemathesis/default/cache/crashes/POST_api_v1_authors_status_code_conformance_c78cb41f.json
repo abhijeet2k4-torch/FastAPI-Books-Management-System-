@@ -1,0 +1,98 @@
+{
+  "operation": "POST /api/v1/authors/",
+  "method": "POST",
+  "path_template": "/api/v1/authors/",
+  "fingerprint": "c78cb41f",
+  "case_id": "QT6kVt",
+  "code_sample": "curl -X POST -H 'K*5Oc*D;' -H 'Content-Type: application/json' -d '\ufffd' http://localhost:8000/api/v1/authors/",
+  "sequence": [
+    {
+      "method": "POST",
+      "url": "http://localhost:8000/api/v1/authors/",
+      "url_template": "http://localhost:8000/api/v1/authors/",
+      "headers": {
+        "User-Agent": "schemathesis/4.24.2",
+        "Accept-Encoding": "gzip, deflate",
+        "Accept": "*/*",
+        "Connection": "keep-alive",
+        "K*5Oc*D": "",
+        "X-Schemathesis-TestCaseId": "QT6kVt",
+        "Content-Type": "application/json",
+        "Content-Length": "1"
+      },
+      "response": {
+        "status_code": 400,
+        "headers": {
+          "date": "Tue, 28 Jul 2026 18:18:19 GMT",
+          "server": "uvicorn",
+          "content-length": "48",
+          "content-type": "application/json"
+        },
+        "body": "{\"detail\":\"There was an error parsing the body\"}"
+      },
+      "link": null,
+      "checks": [
+        {
+          "name": "status_code_conformance",
+          "status": "failure",
+          "message": "Undocumented HTTP status code\n\nReceived: 400\nDocumented: 201, 401, 403, 422"
+        }
+      ],
+      "meta": {
+        "generation": {
+          "time": 0.0032371999695897102,
+          "mode": "negative"
+        },
+        "components": {
+          "HEADER": "negative",
+          "BODY": "negative"
+        },
+        "phase": {
+          "name": "fuzzing",
+          "data": {
+            "type": "FuzzingPhaseData",
+            "description": "violates `required` (was Authorization)",
+            "location": null,
+            "parameter": "Authorization",
+            "parameter_location": "HEADER",
+            "mutations": [
+              {
+                "path": [],
+                "schema_pointer": "",
+                "channel": "schema",
+                "operator": "negate_constraints",
+                "keywords": [
+                  "required"
+                ],
+                "parameter": "Authorization",
+                "original_value": [
+                  "Authorization"
+                ],
+                "new_value": null
+              }
+            ]
+          }
+        },
+        "pool_draws": [],
+        "pool_misses": [],
+        "semantic_draws": [],
+        "dictionary_draws": [],
+        "constants_draws": [],
+        "raw_containers": {}
+      },
+      "path": "/api/v1/authors/",
+      "path_parameters": {},
+      "query": {},
+      "case_headers": {
+        "K*5Oc*D": ""
+      },
+      "cookies": {},
+      "case_body": {
+        "encoding": "base64",
+        "value": "8A=="
+      },
+      "media_type": "application/json",
+      "parent_index": null
+    }
+  ]
+}

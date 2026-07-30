@@ -1,0 +1,92 @@
+{
+  "operation": "POST /api/v1/auth/signup",
+  "method": "POST",
+  "path_template": "/api/v1/auth/signup",
+  "fingerprint": "9dd3d347",
+  "case_id": "K6IKC2",
+  "code_sample": "curl -X POST -H 'Content-Type: application/json' -d '{\"email\": \",\\ud855\\ude49\\u0089\\udb23\\ude34\", \"first_name\": \"&\", \"last_name\": \"\\u0089\\u0085\", \"password\": \"\\u00ce\\u00f3\\u00d1\\u0019\\u00b5\\u00da\\ud81a\\udd6fv\\u0090l\\u00f3{~l\\u0013\\u00a2U\\ud90f\\ude15\\ud809\\udda3\\u00b0\\u009e\\ud871\\udd41%\\u00f0\\u00f4\\u001c\\udae7\\udc92j\", \"username\": \"\\u00b6\\u00f3\", \"oC\\u00a8o\\u00ccyw\\u0093\\u00d2\\u00eb&-\\u0006(2}\\u00c8\\u0011\\u0090+\\u00e9\": {}, \"\\u00a7\\udbc9\\udef8\\udab9\\udd97-\": {\"\": 2.1840501288114516e+16, \"\\u0096\\u000b\\u00a7\\u0018$\\u00d7\\u00bc\": 1125899906842623, \"\\u00d1\\u0084w\\u0082\\u00df\\u0094\": 32736982}, \"null\": {}}' http://localhost:8000/api/v1/auth/signup",
+  "sequence": [
+    {
+      "method": "POST",
+      "url": "http://localhost:8000/api/v1/auth/signup",
+      "url_template": "http://localhost:8000/api/v1/auth/signup",
+      "headers": {
+        "User-Agent": "schemathesis/4.24.2",
+        "Accept-Encoding": "gzip, deflate",
+        "Accept": "*/*",
+        "Connection": "keep-alive",
+        "X-Schemathesis-TestCaseId": "K6IKC2",
+        "Content-Type": "application/json",
+        "Content-Length": "554"
+      },
+      "response": {
+        "status_code": 500,
+        "headers": {
+          "date": "Tue, 28 Jul 2026 18:18:16 GMT",
+          "server": "uvicorn",
+          "content-length": "72",
+          "content-type": "application/json"
+        },
+        "body": "{\"message\":\"Something went wrong\",\"resolution\":\"Please try again later\"}"
+      },
+      "link": null,
+      "checks": [
+        {
+          "name": "not_a_server_error",
+          "status": "failure",
+          "message": "Server error"
+        }
+      ],
+      "meta": {
+        "generation": {
+          "time": 0.004083500010892749,
+          "mode": "positive"
+        },
+        "components": {
+          "BODY": "positive"
+        },
+        "phase": {
+          "name": "fuzzing",
+          "data": {
+            "type": "FuzzingPhaseData",
+            "description": "Positive test case",
+            "location": null,
+            "parameter": null,
+            "parameter_location": null,
+            "mutations": []
+          }
+        },
+        "pool_draws": [],
+        "pool_misses": [],
+        "semantic_draws": [],
+        "dictionary_draws": [],
+        "constants_draws": [],
+        "raw_containers": {}
+      },
+      "path": "/api/v1/auth/signup",
+      "path_parameters": {},
+      "query": {},
+      "case_headers": {},
+      "cookies": {},
+      "case_body": {
+        "encoding": "json",
+        "value": {
+          "email": ",\ud855\ude49\u0089\udb23\ude34",
+          "first_name": "&",
+          "last_name": "\u0089\u0085",
+          "password": "[Filtered]",
+          "username": "\u00b6\u00f3",
+          "oC\u00a8o\u00ccyw\u0093\u00d2\u00eb&-\u0006(2}\u00c8\u0011\u0090+\u00e9": {},
+          "\u00a7\udbc9\udef8\udab9\udd97-": {
+            "": 2.1840501288114516e+16,
+            "\u0096\u000b\u00a7\u0018$\u00d7\u00bc": 1125899906842623,
+            "\u00d1\u0084w\u0082\u00df\u0094": 32736982
+          },
+          "null": {}
+        }
+      },
+      "media_type": "application/json",
+      "parent_index": null
+    }
+  ]
+}

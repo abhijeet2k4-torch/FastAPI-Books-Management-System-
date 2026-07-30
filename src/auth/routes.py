@@ -19,17 +19,39 @@ role_checker = RoleChekcer(['admin',"user"])
 
 REFRESH_TOKEN_EXPIRY = timedelta(days=7)
 
-@auth_router.post("/signup",response_model=UserModel, status_code=status.HTTP_201_CREATED)
+@auth_router.post(
+    "/signup",
+    response_model=UserModel,
+    status_code=status.HTTP_201_CREATED,
+    responses={
+        status.HTTP_201_CREATED: {"description": "User created"},
+        status.HTTP_400_BAD_REQUEST: {"description": "Invalid request body"},
+        status.HTTP_409_CONFLICT: {"description": "User already exists"},
+        status.HTTP_422_UNPROCESSABLE_ENTITY: {"description": "Validation error"},
+    },
+)
 async def create_user_Account(user_data: UserCreateModel, session: AsyncSession = Depends(get_session)):
     email = user_data.email
 
     user_exists = await user_service.user_exists(email, session)
     if user_exists:
         raise UserAlreadyExistsError("User with this email already exists")
-    new_user = await user_service.create_user(user_data, session)
+    try:
+        new_user = await user_service.create_user(user_data, session)
+    except (UnicodeError, ValueError) as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid request body") from exc
     return new_user
 
-@auth_router.post("/login")
+@auth_router.post(
+    "/login",
+    responses={
+        status.HTTP_200_OK: {"description": "Login successful"},
+        status.HTTP_400_BAD_REQUEST: {"description": "Invalid request body"},
+        status.HTTP_403_FORBIDDEN: {"description": "Invalid credentials"},
+        status.HTTP_404_NOT_FOUND: {"description": "User not found"},
+        status.HTTP_422_UNPROCESSABLE_ENTITY: {"description": "Validation error"},
+    },
+)
 async def login_user(login_data: UserLoginModel, session: AsyncSession = Depends(get_session)):
     email = login_data.email
     password = login_data.password
@@ -60,7 +82,14 @@ async def login_user(login_data: UserLoginModel, session: AsyncSession = Depends
         }
     )
     raise InvalidCredentialsError("Invalid credentials")
-@auth_router.get("/refresh_token")
+@auth_router.get(
+    "/refresh_token",
+    responses={
+        status.HTTP_200_OK: {"description": "New access token generated"},
+        status.HTTP_401_UNAUTHORIZED: {"description": "Invalid or expired refresh token"},
+        status.HTTP_403_FORBIDDEN: {"description": "Invalid or expired token"},
+    },
+)
 async def get_new_access_token(token_details:dict = Depends(RefreshTokenBearer())):
     expiry_date = token_details['exp']
     if datetime.datetime.fromtimestamp(expiry_date) > datetime.datetime.now():
@@ -73,7 +102,14 @@ async def get_new_access_token(token_details:dict = Depends(RefreshTokenBearer()
     else:
         raise InvalidTokenError("Invalid or expired refresh token")
     
-@auth_router.get('/logout')
+@auth_router.get(
+    '/logout',
+    responses={
+        status.HTTP_200_OK: {"description": "Logged out successfully"},
+        status.HTTP_401_UNAUTHORIZED: {"description": "Unauthorized"},
+        status.HTTP_403_FORBIDDEN: {"description": "Invalid or expired token"},
+    },
+)
 async def revoke_token(token_details:dict=Depends(AccessTokenBearer())):
     jti = token_details['jti']
     await add_jti_to_blocklist(jti)
@@ -84,6 +120,14 @@ async def revoke_token(token_details:dict=Depends(AccessTokenBearer())):
         status_code=status.HTTP_200_OK
     )
 
-@auth_router.get('/me', response_model=UserBookModel)
+@auth_router.get(
+    '/me',
+    response_model=UserBookModel,
+    responses={
+        status.HTTP_200_OK: {"description": "Current user details"},
+        status.HTTP_401_UNAUTHORIZED: {"description": "Unauthorized"},
+        status.HTTP_403_FORBIDDEN: {"description": "Invalid or expired token"},
+    },
+)
 async def read_current_user(user= Depends(get_current_user), _:bool = Depends(role_checker)):
     return user

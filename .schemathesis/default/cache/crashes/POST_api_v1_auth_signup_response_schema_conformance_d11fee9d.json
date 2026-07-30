@@ -1,0 +1,85 @@
+{
+  "operation": "POST /api/v1/auth/signup",
+  "method": "POST",
+  "path_template": "/api/v1/auth/signup",
+  "fingerprint": "d11fee9d",
+  "case_id": "IwJLLG",
+  "code_sample": "curl -X POST -H 'Content-Type: application/json' -d '{\"email\": \"\\u00af&\\udb33\\udf78\\u00a2\\n+A\", \"first_name\": \"\", \"last_name\": \"\", \"password\": \"000000\", \"username\": \"\"}' http://localhost:8000/api/v1/auth/signup",
+  "sequence": [
+    {
+      "method": "POST",
+      "url": "http://localhost:8000/api/v1/auth/signup",
+      "url_template": "http://localhost:8000/api/v1/auth/signup",
+      "headers": {
+        "User-Agent": "schemathesis/4.24.2",
+        "Accept-Encoding": "gzip, deflate",
+        "Accept": "*/*",
+        "Connection": "keep-alive",
+        "X-Schemathesis-TestCaseId": "IwJLLG",
+        "Content-Type": "application/json",
+        "Content-Length": "115"
+      },
+      "response": {
+        "status_code": 201,
+        "headers": {
+          "date": "Tue, 28 Jul 2026 17:53:02 GMT",
+          "server": "uvicorn",
+          "content-length": "219",
+          "content-type": "application/json"
+        },
+        "body": "{\"uid\":\"ab7be855-6175-4f19-a024-b33a65ed91e5\",\"username\":\"\",\"email\":\"\u00af&\udb33\udf78\u00a2\\n+A\",\"first_name\":\"\",\"last_name\":\"\",\"is_verified\":false,\"created_at\":\"2026-07-28T23:23:03.912775\",\"updated_at\":\"2026-07-28T23:23:03.912778\"}"
+      },
+      "link": null,
+      "checks": [
+        {
+          "name": "response_schema_conformance",
+          "status": "failure",
+          "message": "Response violates schema\n\n\"2026-07-28T23:23:03.912778\" is not a \"date-time\"\n\nValidated against the response schema for status code 201.\n\nSchema at /properties/updated_at:\n\n    {\n        \"format\": \"date-time\",\n        \"type\": \"string\",\n        \"title\": \"Updated At\"\n    }\n\nValue:\n\n    \"2026-07-28T23:23:03.912778\""
+        }
+      ],
+      "meta": {
+        "generation": {
+          "time": 0.0010682999854907393,
+          "mode": "positive"
+        },
+        "components": {
+          "BODY": "positive"
+        },
+        "phase": {
+          "name": "fuzzing",
+          "data": {
+            "type": "FuzzingPhaseData",
+            "description": "Positive test case",
+            "location": null,
+            "parameter": null,
+            "parameter_location": null,
+            "mutations": []
+          }
+        },
+        "pool_draws": [],
+        "pool_misses": [],
+        "semantic_draws": [],
+        "dictionary_draws": [],
+        "constants_draws": [],
+        "raw_containers": {}
+      },
+      "path": "/api/v1/auth/signup",
+      "path_parameters": {},
+      "query": {},
+      "case_headers": {},
+      "cookies": {},
+      "case_body": {
+        "encoding": "json",
+        "value": {
+          "email": "\u00af&\udb33\udf78\u00a2\n+A",
+          "first_name": "",
+          "last_name": "",
+          "password": "[Filtered]",
+          "username": ""
+        }
+      },
+      "media_type": "application/json",
+      "parent_index": null
+    }
+  ]
+}

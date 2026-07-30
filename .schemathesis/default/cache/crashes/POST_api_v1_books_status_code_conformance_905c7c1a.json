@@ -1,0 +1,98 @@
+{
+  "operation": "POST /api/v1/books/",
+  "method": "POST",
+  "path_template": "/api/v1/books/",
+  "fingerprint": "905c7c1a",
+  "case_id": "dQfDU3",
+  "code_sample": "curl -X POST -H 'Authorization: [Filtered]' -H 'Content-Type: application/json' -d '\ufffdW\ufffdI\ufffd' http://localhost:8000/api/v1/books/",
+  "sequence": [
+    {
+      "method": "POST",
+      "url": "http://localhost:8000/api/v1/books/",
+      "url_template": "http://localhost:8000/api/v1/books/",
+      "headers": {
+        "User-Agent": "schemathesis/4.24.2",
+        "Accept-Encoding": "gzip, deflate",
+        "Accept": "*/*",
+        "Connection": "keep-alive",
+        "Authorization": "[Filtered]",
+        "X-Schemathesis-TestCaseId": "dQfDU3",
+        "Content-Type": "application/json",
+        "Content-Length": "5"
+      },
+      "response": {
+        "status_code": 400,
+        "headers": {
+          "date": "Tue, 28 Jul 2026 18:18:20 GMT",
+          "server": "uvicorn",
+          "content-length": "48",
+          "content-type": "application/json"
+        },
+        "body": "{\"detail\":\"There was an error parsing the body\"}"
+      },
+      "link": null,
+      "checks": [
+        {
+          "name": "status_code_conformance",
+          "status": "failure",
+          "message": "Undocumented HTTP status code\n\nReceived: 400\nDocumented: 201, 401, 403, 422"
+        }
+      ],
+      "meta": {
+        "generation": {
+          "time": 0.008199000032618642,
+          "mode": "negative"
+        },
+        "components": {
+          "HEADER": "negative",
+          "BODY": "negative"
+        },
+        "phase": {
+          "name": "fuzzing",
+          "data": {
+            "type": "FuzzingPhaseData",
+            "description": "violates `format` at /properties/Authorization",
+            "location": "/properties/Authorization",
+            "parameter": "Authorization",
+            "parameter_location": "HEADER",
+            "mutations": [
+              {
+                "path": [
+                  "Authorization"
+                ],
+                "schema_pointer": "/properties/Authorization",
+                "channel": "schema",
+                "operator": "negate_constraints",
+                "keywords": [
+                  "format"
+                ],
+                "parameter": "Authorization",
+                "original_value": null,
+                "new_value": null
+              }
+            ]
+          }
+        },
+        "pool_draws": [],
+        "pool_misses": [],
+        "semantic_draws": [],
+        "dictionary_draws": [],
+        "constants_draws": [],
+        "raw_containers": {}
+      },
+      "path": "/api/v1/books/",
+      "path_parameters": {},
+      "query": {},
+      "case_headers": {
+        "Authorization": "[Filtered]"
+      },
+      "cookies": {},
+      "case_body": {
+        "encoding": "base64",
+        "value": "31e6Sfw="
+      },
+      "media_type": "application/json",
+      "parent_index": null
+    }
+  ]
+}

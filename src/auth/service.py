@@ -1,9 +1,18 @@
 import uuid
+from datetime import datetime, timezone
 from src.db.models import User
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlmodel import select
 from .schemas import UserCreateModel
 from .utils import generate_password_hash
+
+
+def _ensure_timezone_aware(value: datetime | None) -> datetime | None:
+    if value is None:
+        return None
+    if value.tzinfo is None:
+        return value.replace(tzinfo=timezone.utc)
+    return value
 
 class UserService:
     async def get_user_by_email(self,email:str, session: AsyncSession) -> User:
@@ -33,4 +42,6 @@ class UserService:
         session.add(new_user)
         await session.commit()
         await session.refresh(new_user)
+        new_user.created_at = _ensure_timezone_aware(new_user.created_at)
+        new_user.updated_at = _ensure_timezone_aware(new_user.updated_at)
         return new_user

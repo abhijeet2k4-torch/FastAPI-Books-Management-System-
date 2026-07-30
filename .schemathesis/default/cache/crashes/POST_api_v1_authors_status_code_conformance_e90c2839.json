@@ -1,0 +1,98 @@
+{
+  "operation": "POST /api/v1/authors/",
+  "method": "POST",
+  "path_template": "/api/v1/authors/",
+  "fingerprint": "e90c2839",
+  "case_id": "oUrQMF",
+  "code_sample": "curl -X POST -H 'Authorization: [Filtered]' -H 'Content-Type: application/json' -d '{\"email\": \"\\u00af&\\udb33\\udf78\\u00a2\\n+A\", \"name\": \"\"}' http://localhost:8000/api/v1/authors/",
+  "sequence": [
+    {
+      "method": "POST",
+      "url": "http://localhost:8000/api/v1/authors/",
+      "url_template": "http://localhost:8000/api/v1/authors/",
+      "headers": {
+        "User-Agent": "schemathesis/4.24.2",
+        "Accept-Encoding": "gzip, deflate",
+        "Accept": "*/*",
+        "Connection": "keep-alive",
+        "Authorization": "[Filtered]",
+        "X-Schemathesis-TestCaseId": "oUrQMF",
+        "Content-Type": "application/json",
+        "Content-Length": "54"
+      },
+      "response": {
+        "status_code": 403,
+        "headers": {
+          "date": "Tue, 28 Jul 2026 17:53:02 GMT",
+          "server": "uvicorn",
+          "content-length": "91",
+          "content-type": "application/json"
+        },
+        "body": "{\"detail\":{\"error\":\"This token is invalid or expired\",\"resolution\":\"Please get new token\"}}"
+      },
+      "link": null,
+      "checks": [
+        {
+          "name": "status_code_conformance",
+          "status": "failure",
+          "message": "Undocumented HTTP status code\n\nReceived: 403\nDocumented: 201, 401, 422"
+        }
+      ],
+      "meta": {
+        "generation": {
+          "time": 0.0010427000233903527,
+          "mode": "positive"
+        },
+        "components": {
+          "HEADER": "positive",
+          "BODY": "positive"
+        },
+        "phase": {
+          "name": "fuzzing",
+          "data": {
+            "type": "FuzzingPhaseData",
+            "description": "Positive test case",
+            "location": null,
+            "parameter": null,
+            "parameter_location": null,
+            "mutations": []
+          }
+        },
+        "pool_draws": [],
+        "pool_misses": [],
+        "semantic_draws": [
+          {
+            "path": [
+              "email"
+            ],
+            "type_token": "string",
+            "format_token": null,
+            "pattern_hash": null,
+            "normalized_name": "email",
+            "value": "\u00af&\udb33\udf78\u00a2\n+A",
+            "source_operation": "POST /api/v1/auth/signup"
+          }
+        ],
+        "dictionary_draws": [],
+        "constants_draws": [],
+        "raw_containers": {}
+      },
+      "path": "/api/v1/authors/",
+      "path_parameters": {},
+      "query": {},
+      "case_headers": {
+        "Authorization": "[Filtered]"
+      },
+      "cookies": {},
+      "case_body": {
+        "encoding": "json",
+        "value": {
+          "email": "\u00af&\udb33\udf78\u00a2\n+A",
+          "name": ""
+        }
+      },
+      "media_type": "application/json",
+      "parent_index": null
+    }
+  ]
+}

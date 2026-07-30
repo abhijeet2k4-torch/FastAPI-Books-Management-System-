@@ -8,7 +8,10 @@ import logging
 ACCESS_TOKEN_EXPIRY = 3600
 
 def generate_password_hash(password: str) -> str:
-    hashed = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
+    try:
+        hashed = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
+    except UnicodeEncodeError as exc:
+        raise ValueError("Invalid password encoding") from exc
     return hashed.decode("utf-8")
 
 def verify_password(password: str, hash: str) -> bool:

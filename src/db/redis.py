@@ -18,7 +18,6 @@ if settings.REDIS_ENABLED:
         db=0,
         socket_timeout=1,
         socket_connect_timeout=1,
-        retry_on_timeout=True,
     )
 
 

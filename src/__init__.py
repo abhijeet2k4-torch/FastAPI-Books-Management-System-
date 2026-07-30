@@ -14,8 +14,13 @@ async def lifespan(app:FastAPI):
     yield
     print("Server is shutting down...")
 
-app = FastAPI(lifespan=lifespan)
-version = "0.1.0"
+app = FastAPI(
+    lifespan=lifespan,
+    openapi_url="/api/v1/openapi.json",
+    docs_url="/api/v1/docs",
+    redoc_url="/api/v1/redoc",
+)
+version = "v1"
 
 
 app.add_exception_handler(InvalidTokenError, create_exception_handler(status_code=status.HTTP_401_UNAUTHORIZED, initial_detail={"message": "Invalid token", "resolution": "Please get new token"}))
@@ -25,7 +30,7 @@ app.add_exception_handler(RefreshTokenExpiredError, create_exception_handler(sta
 app.add_exception_handler(InsufficientPermissionsError, create_exception_handler(status_code=status.HTTP_403_FORBIDDEN, initial_detail={"message": "Insufficient permissions", "resolution": "Please contact support"}))
 app.add_exception_handler(BookNotFoundError, create_exception_handler(status_code=status.HTTP_404_NOT_FOUND, initial_detail={"message": "Book not found", "resolution": "Please check the book ID"}))
 app.add_exception_handler(InvalidCredentialsError, create_exception_handler(status_code=status.HTTP_401_UNAUTHORIZED, initial_detail={"message": "Invalid credentials", "resolution": "Please check your credentials"}))
-app.add_exception_handler(UserAlreadyExistsError, create_exception_handler(status_code=status.HTTP_400_BAD_REQUEST, initial_detail={"message": "User already exists", "resolution": "Please use a different email"}))
+app.add_exception_handler(UserAlreadyExistsError, create_exception_handler(status_code=status.HTTP_409_CONFLICT, initial_detail={"message": "User already exists", "resolution": "Please use a different email"}))
 
 @app.exception_handler(500)
 async def internal_server_error_handler(request, exc):
@@ -35,6 +40,6 @@ async def internal_server_error_handler(request, exc):
     )
 
 
-app.include_router(book_router, prefix=f"/api/{version}/books",tags=["Books"])
-app.include_router(author_router, prefix=f"/api/{version}/authors",tags=["Authors"])
-app.include_router(auth_router, prefix=f"/api/{version}/auth",tags=["Authentication"])
+app.include_router(book_router, prefix=f"/api/{version}/books", tags=["Books"])
+app.include_router(author_router, prefix=f"/api/{version}/authors", tags=["Authors"])
+app.include_router(auth_router, prefix=f"/api/{version}/auth", tags=["Authentication"])

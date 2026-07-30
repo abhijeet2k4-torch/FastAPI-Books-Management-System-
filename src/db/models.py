@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Optional
 import sqlalchemy.dialects.postgresql as pg
 from sqlmodel import Column, Field, Relationship, SQLModel
@@ -19,8 +19,8 @@ class BookModel(SQLModel, table=True):
     author: str
     year: int
     user_uid: Optional[uuid.UUID] = Field(default=None, foreign_key="users.uid")
-    create_date: datetime = Field(sa_column=Column(pg.TIMESTAMP, default=datetime.now))
-    update_date: datetime = Field(sa_column=Column(pg.TIMESTAMP, default=datetime.now))
+    create_date: datetime = Field(sa_column=Column(pg.TIMESTAMP, default=lambda: datetime.now(timezone.utc)))
+    update_date: datetime = Field(sa_column=Column(pg.TIMESTAMP, default=lambda: datetime.now(timezone.utc)))
     user: Optional['User'] = Relationship(back_populates='books')
 
     def __repr__(self):
@@ -39,8 +39,8 @@ class AuthorModel(SQLModel, table=True):
     )
     name: str
     email: str
-    create_date: datetime = Field(sa_column=Column(pg.TIMESTAMP, default=datetime.now))
-    update_date: datetime = Field(sa_column=Column(pg.TIMESTAMP, default=datetime.now))
+    create_date: datetime = Field(sa_column=Column(pg.TIMESTAMP, default=lambda: datetime.now(timezone.utc)))
+    update_date: datetime = Field(sa_column=Column(pg.TIMESTAMP, default=lambda: datetime.now(timezone.utc)))
     user_uid: Optional[uuid.UUID] = Field(default=None, foreign_key="users.uid")
     user: Optional['User'] = Relationship(back_populates='authors')
 
@@ -67,8 +67,8 @@ class User(SQLModel, table=True):
     ))
     is_verified: bool = Field(default=False)
     password_has: str = Field(exclude=True)
-    created_at: datetime = Field(sa_column=Column(pg.TIMESTAMP, nullable=False, default=datetime.now))
-    updated_at: datetime = Field(sa_column=Column(pg.TIMESTAMP, nullable=False, default=datetime.now))
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), sa_column=Column(pg.TIMESTAMP, nullable=False, default=lambda: datetime.now(timezone.utc)))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), sa_column=Column(pg.TIMESTAMP, nullable=False, default=lambda: datetime.now(timezone.utc)))
     books: List['BookModel'] = Relationship(back_populates='user', sa_relationship_kwargs={'lazy': "selectin"})
     authors: List['AuthorModel'] = Relationship(back_populates='user', sa_relationship_kwargs={'lazy': "selectin"})
     reviews: List['Review'] = Relationship(back_populates='user', sa_relationship_kwargs={'lazy': "selectin"})
@@ -82,8 +82,8 @@ class Review(SQLModel, table=True):
     user_uid: Optional[uuid.UUID] = Field(default=None, foreign_key="users.uid")
     user: Optional['User'] = Relationship(back_populates='reviews')
     book_uid: Optional[uuid.UUID] = Field(default=None, foreign_key="books.uid")
-    create_date: datetime = Field(sa_column=Column(pg.TIMESTAMP, default=datetime.now))
-    update_date: datetime = Field(sa_column=Column(pg.TIMESTAMP, default=datetime.now))
+    create_date: datetime = Field(sa_column=Column(pg.TIMESTAMP, default=lambda: datetime.now(timezone.utc)))
+    update_date: datetime = Field(sa_column=Column(pg.TIMESTAMP, default=lambda: datetime.now(timezone.utc)))
     review_text: Optional[str] = Field(default=None)
 
     def __repr__(self):

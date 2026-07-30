@@ -9,7 +9,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from .service import UserService
 from typing import List, Any
 from src.db.models import User
-from src.errors import InvalidTokenError, RevokedTokenError, AccessTokenExpiredError, RefreshTokenExpiredError
+from src.errors import InvalidTokenError, RevokedTokenError, AccessTokenExpiredError, RefreshTokenExpiredError, InsufficientPermissionsError
 
 user_service = UserService()
 
@@ -38,16 +38,23 @@ class AccessTokenBearer(TokenBearer):
     def verify_token_data(self,token_data: dict):
         if token_data and token_data['refresh']:
             raise AccessTokenExpiredError("Please provide an access token, not a refresh token")
+
+
 class RefreshTokenBearer(TokenBearer):
     def verify_token_data(self, token_data: dict):
         if token_data and not token_data['refresh']:
             raise RefreshTokenExpiredError("Please provide a refresh token, not an access token")
+
+
+RefreshtokenBearer = RefreshTokenBearer
+
+
 async def get_current_user(token_details:dict = Depends(AccessTokenBearer()), session: AsyncSession = Depends(get_session)):
     user_uid = token_details['user']['uid']
     user = await user_service.get_user_by_uid(uuid.UUID(user_uid), session)
     return user
 
-class RoleChekcer:
+class RoleChecker:
     def __init__(self,allowed_roles:List[str]) -> None:
         self.allowed_roles = allowed_roles
 
@@ -55,3 +62,7 @@ class RoleChekcer:
         if current_user.role in self.allowed_roles:
             return True
         raise InsufficientPermissionsError("You are not authorized to access this resource")
+
+
+RoleChekcer = RoleChecker
+role_checker = RoleChecker(['admin', 'user'])
